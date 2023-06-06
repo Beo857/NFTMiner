@@ -1,10 +1,11 @@
 const walletAddress = prompt("Enter your wallet address:");
 const contractAddress = "0x43fb710c955D7c96C9F7906E79d6D1DEB5b19107"; // Replace with your deployed NFTMiner contract address
+const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-const provider = ethers.getDefaultProvider("https://polygon-rpc.com");
 const contractABI = [
-    // Add the ABI of your deployed NFTMiner contract here
-    {"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},
+  // Add the ABI of your deployed NFTMiner contract here
+  // ...
+ {"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},
     {"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},
     {"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},
     {"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},
@@ -38,35 +39,44 @@ document.getElementById("mintButton").addEventListener("click", mint);
 document.getElementById("purchaseButton").addEventListener("click", purchase);
 
 async function mine() {
-    try {
-        const minedTx = await contract.connect(signer).mine({ from: walletAddress });
-        await minedTx.wait();
-        alert("Mining completed!");
-    } catch (error) {
-        console.error(error);
-        alert("An error occurred while mining!");
-    }
+  const minedTx = await contract.connect(signer).mine();
+  await minedTx.wait();
+  alert("Mining completed!");
 }
 
 async function mint() {
-    try {
-        const mintTx = await contract.connect(signer).createRandomAvenger("Avenger Name", { from: walletAddress });
-        await mintTx.wait();
-        alert("Avenger NFT minted!");
-    } catch (error) {
-        console.error(error);
-        alert("An error occurred while minting Avenger NFT!");
-    }
+  const avengerName = prompt("Enter the Avenger name:");
+  const avengerImageURL = "https://www.bing.com/images/search?view=detailV2&ccid=2wvqg2DD&id=0224E7679875DBD870A94B37122E7722DE104DE9&thid=OIP.2wvqg2DDNkruDB9nmWuUPgHaFv&mediaurl=https%3a%2f%2fwww.spriters-resource.com%2fresources%2fsheets%2f51%2f54505.png%3fupdated%3d1460960528&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.db0bea8360c3364aee0c1f67996b943e%3frik%3d6U0Q3iJ3LhI3Sw%26pid%3dImgRaw%26r%3d0&exph=1550&expw=2000&q=https%3a%2f%2fbeo857.github.in%2fNFTminer%2f+avenger+3d+stock+sprites+png&simid=608011608347722047&FORM=IRPRST&ck=6C75B51C4D783EBFB1958F4ADBF58AC0&selectedIndex=0&ajaxhist=0&ajaxserp=0";
+  const mintTx = await contract.connect(signer).createRandomAvenger(avengerName, avengerImageURL);
+  await mintTx.wait();
+  alert("Avenger NFT minted!");
 }
 
 async function purchase() {
-    try {
-        const avengerId = prompt("Enter the Avenger ID to purchase:");
-        const purchaseTx = await contract.connect(signer).purchaseAvenger(avengerId, { value: ethers.utils.parseEther("0.5"), from: walletAddress });
-        await purchaseTx.wait();
-        alert("Avenger NFT purchased!");
-    } catch (error) {
-        console.error(error);
-        alert("An error occurred while purchasing Avenger NFT!");
-    }
+  const avengerId = prompt("Enter the Avenger ID to purchase:");
+  const purchaseTx = await contract.connect(signer).purchaseAvenger(avengerId, { value: ethers.utils.parseEther("0.5") });
+  await purchaseTx.wait();
+  alert("Avenger NFT purchased!");
 }
+
+async function queryAvengers() {
+  const totalAvengers = await contract.totalSupply();
+
+  for (let i = 0; i < totalAvengers; i++) {
+    const avenger = await contract.getAvenger(i);
+    const avengerId = avenger[0].toNumber();
+    const avengerName = avenger[1];
+    const avengerImageURL = avenger[2];
+    // Create an HTML element to display the Avenger details
+    const avengerElement = document.createElement("div");
+    avengerElement.innerHTML = `
+      <p>Avenger ID: ${avengerId}</p>
+      <p>Avenger Name: ${avengerName}</p>
+      <img src="${avengerImageURL}" alt="Avenger Image">
+    `;
+    // Append the Avenger element to a container
+    document.getElementById("avengerContainer").appendChild(avengerElement);
+  }
+}
+
+queryAvengers();
