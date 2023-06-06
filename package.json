@@ -1,0 +1,19 @@
+{
+  "name": "avengersnftminer",
+  "version": "1.0.0",
+  "description": "NFT Miner",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Crypto",
+    "Miner",
+    "Nft"
+  ],
+  "author": "Beo",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^6.4.1"
+  }
+}

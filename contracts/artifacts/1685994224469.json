@@ -1,0 +1,18 @@
+{
+    "errors": [
+        {
+            "component": "general",
+            "errorCode": "5333",
+            "formattedMessage": "ParserError: Source file requires different compiler version (current compiler is 0.8.6+commit.11564f7e.Emscripten.clang) - note that nightly builds are considered to be strictly less than the released version\n --> NFTMiner.sol:2:1:\n  |\n2 | pragma solidity ^0.5.0;\n  | ^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+            "message": "Source file requires different compiler version (current compiler is 0.8.6+commit.11564f7e.Emscripten.clang) - note that nightly builds are considered to be strictly less than the released version",
+            "severity": "error",
+            "sourceLocation": {
+                "end": 56,
+                "file": "NFTMiner.sol",
+                "start": 33
+            },
+            "type": "ParserError"
+        }
+    ],
+    "sources": {}
+}
